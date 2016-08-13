@@ -7,7 +7,7 @@ Ext.define('Jarvus.monaco.Editor', {
     xtype: 'jarvus-monaco-editor',
 
     config: {
-        source: 'min',
+        source: 'min', // "min" or "dev"
         content: null,
         language: 'javascript',
         monaco: null
