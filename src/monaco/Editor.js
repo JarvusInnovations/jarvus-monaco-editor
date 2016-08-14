@@ -1,6 +1,6 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 /**
- *
+ * An ExtJS component wrapper for the Monaco editor
  */
 Ext.define('Jarvus.monaco.Editor', {
     extend: 'Ext.Component',
@@ -33,9 +33,7 @@ Ext.define('Jarvus.monaco.Editor', {
     },
 
     afterRender: function() {
-        var me = this;
-
-        me.initEditor();
+        this.initEditor();
     },
 
     initEditor: function() {
@@ -59,28 +57,21 @@ Ext.define('Jarvus.monaco.Editor', {
                 i = 0,
                 editor, evnt;
 
+            // Create the Monaco editor
             editor = monaco.editor.create(me.getEl().dom, {
                 value: me.getContent(),
                 language: me.getLanguage()
             });
             me.setMonaco(editor);
 
-            console.log(subscribe);
-
+            // Bubble subscribed events from Monaco
+            // TODO: Will any of the Monaco event names conflict with Ext.Component event names?
             for (; i<subscribeLength; i++) {
                 evnt = subscribe[i];
-                console.log(evnt);
                 editor[evnt](function() {
-                    console.log('mousedown!!!!');
-                    console.log('monaco-'+evnt.toLowerCase());
                     me.fireEvent(evnt.toLowerCase(),me,arguments);
                 });
             }
-            /*
-            editor.onMouseDown(function (e) {
-                console.log('mousedown - ' + e.target.toString());
-            });
-            */
         });
     },
 
