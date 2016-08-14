@@ -10,7 +10,12 @@ Ext.define('Jarvus.monaco.Editor', {
         source: 'min', // "min" or "dev"
         content: null,
         language: 'javascript',
-        monaco: null
+        monaco: null,
+        subscribe: []
+    },
+
+    listeners: {
+        resize: 'onResize'
     },
 
     /**
@@ -47,12 +52,44 @@ Ext.define('Jarvus.monaco.Editor', {
                 'vs': me.getSource()+'/vs'
             }
         });
+
         require(['vs/editor/editor.main'], function() {
-            me.setMonaco(monaco.editor.create(document.getElementById(me.el.id), {
+            var subscribe = me.getSubscribe(),
+                subscribeLength = subscribe.length,
+                i = 0,
+                editor, evnt;
+
+            editor = monaco.editor.create(me.getEl().dom, {
                 value: me.getContent(),
                 language: me.getLanguage()
-            }));
+            });
+            me.setMonaco(editor);
+
+            console.log(subscribe);
+
+            for (; i<subscribeLength; i++) {
+                evnt = subscribe[i];
+                console.log(evnt);
+                editor[evnt](function() {
+                    console.log('mousedown!!!!');
+                    console.log('monaco-'+evnt.toLowerCase());
+                    me.fireEvent(evnt.toLowerCase(),me,arguments);
+                });
+            }
+            /*
+            editor.onMouseDown(function (e) {
+                console.log('mousedown - ' + e.target.toString());
+            });
+            */
         });
+    },
+
+    onResize: function() {
+        var monaco = this.getMonaco();
+
+        if (monaco && monaco.layout) {
+            monaco.layout();
+        }
     }
 
 });
