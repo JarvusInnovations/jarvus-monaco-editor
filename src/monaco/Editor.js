@@ -47,7 +47,7 @@ Ext.define('Jarvus.monaco.Editor', {
                 editor, evnt;
 
             // Create the Monaco editor
-            editor = monaco.editor.create(me.getEl().dom, {
+            me.editor = monaco.editor.create(me.getEl().dom, {
                 value: me.getContent(),
                 language: me.getLanguage()
             });
@@ -57,7 +57,7 @@ Ext.define('Jarvus.monaco.Editor', {
             // TODO: Will any of the Monaco event names conflict with Ext.Component event names?
             for (; i<subscribeLength; i++) {
                 evnt = subscribe[i];
-                editor[evnt](function() {
+                me.editor[evnt](function() {
                     me.fireEvent(evnt.toLowerCase(),me,arguments);
                 });
             }
