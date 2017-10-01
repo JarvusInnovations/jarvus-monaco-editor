@@ -39,18 +39,7 @@ Ext.define('Jarvus.monaco.Editor', {
     initEditor: function() {
         var me = this;
 
-        require.config({
-            /*
-             * TODO: is there a better way to set this path? See discussion here:
-             * https://www.sencha.com/forum/showthread.php?291559-Referencing-resources-from-packages-in-dev-mode
-             * For this to work in dev mode, you must build build the app at least once
-             */
-            baseUrl: '../build/production/EmergenceDbtool/resources/jarvus-monaco-editor/monaco-editor',
-            paths: {
-                'vs': me.getSource()+'/vs'
-            }
-        });
-
+        require.config({ paths: { 'vs': Ext.getResourcePath('jarvus-monaco-editor/monaco-editor/min/vs') }});
         require(['vs/editor/editor.main'], function() {
             var subscribe = me.getSubscribe(),
                 subscribeLength = subscribe.length,
@@ -58,7 +47,7 @@ Ext.define('Jarvus.monaco.Editor', {
                 editor, evnt;
 
             // Create the Monaco editor
-            editor = monaco.editor.create(me.getEl().dom, {
+            me.editor = monaco.editor.create(me.getEl().dom, {
                 value: me.getContent(),
                 language: me.getLanguage()
             });
@@ -68,7 +57,7 @@ Ext.define('Jarvus.monaco.Editor', {
             // TODO: Will any of the Monaco event names conflict with Ext.Component event names?
             for (; i<subscribeLength; i++) {
                 evnt = subscribe[i];
-                editor[evnt](function() {
+                me.editor[evnt](function() {
                     me.fireEvent(evnt.toLowerCase(),me,arguments);
                 });
             }
@@ -82,5 +71,4 @@ Ext.define('Jarvus.monaco.Editor', {
             monaco.layout();
         }
     }
-
 });
